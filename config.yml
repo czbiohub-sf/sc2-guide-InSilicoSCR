@@ -1,0 +1,8 @@
+admins: chunyu.zhao@czbiohub.org
+
+project_dir: /mnt/chunyu_6TB/cas13/20200805_sc2_guides
+guide_fasta: "/mnt/chunyu_6TB/cas13/20200805_sc2_guides/guides.fa"
+
+krakenuniq:
+    viral_neighbors_db: /mnt/chunyu_6TB/cas13/dbs/viral-neighbors-20200605-wo
+    refseq_bacteir_db: /mnt/chunyu_6TB/cas13/dbs/refseq-bacteria-20200607
