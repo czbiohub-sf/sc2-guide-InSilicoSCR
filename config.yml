@@ -3,6 +3,26 @@ admins: chunyu.zhao@czbiohub.org
 project_dir: /mnt/chunyu_6TB/cas13/20200805_sc2_guides
 guide_fasta: "/mnt/chunyu_6TB/cas13/20200805_sc2_guides/guides.fa"
 
+
 krakenuniq:
     viral_neighbors_db: /mnt/chunyu_6TB/cas13/dbs/viral-neighbors-20200605-wo
     refseq_bacteir_db: /mnt/chunyu_6TB/cas13/dbs/refseq-bacteria-20200607
+
+qc:
+    host_ref: /mnt/chunyu_6TB/cas13/dbs/hg38.fa
+    sc2_ref: /mnt/chunyu_6TB/cas13/czbiohub/data/MN908947.3.fa
+    threads: 8
+
+
+msspe:
+    samplelist_fp: /mnt/chunyu_6TB/cas13/data/czb_msspe_run1/samples.tsv
+    old_data_dir: /mnt/chunyu_6TB/cas13/czbiohub/20200710_msspe_run1
+    data_dir: /mnt/chunyu_6TB/cas13/data/czb_msspe_run1
+    fwd_primer_bedfile: /mnt/chunyu_6TB/cas13/czbiohub/data/SARS-COV-2_spikePrimers.bed
+    fwd_primer_fasta: /mnt/chunyu_6TB/cas13/czbiohub/data/SARS-COV-2_spikePrimers.fasta
+    xprimer_fasta: /mnt/chunyu_6TB/cas13/czbiohub/data/x_5_fwd_primers.fasta
+    rc_primer_x_fasta: /mnt/chunyu_6TB/cas13/czbiohub/data/rc_primers_x_3.fasta
+
+
+hmp1_nasal:
+    samplelist_fp: /mnt/chunyu_6TB/cas13/data/hmp1/samples.tsv

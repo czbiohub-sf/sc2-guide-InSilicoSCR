@@ -96,3 +96,7 @@ rule classify_neighbors_rb:
         db = config["krakenuniq"]["viral_neighbors_db"],
     shell:
         "Rscript isscrlib/classify_neighbors.R {wildcards.guide} {input} {output} {params.db} {params.guides}"
+
+
+include:
+	"rules/qc_msspe.rules"
