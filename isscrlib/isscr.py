@@ -5,10 +5,11 @@ import argparse
 import glob
 from collections import defaultdict
 from math import ceil
-import Bio.SeqIO
+
+from Bio import SeqIO
 from Bio.SeqIO.QualityIO import FastqGeneralIterator
 import screed
-from utils import InputStream, OutputStream, cat_files, fasta_iter, command_output, multiprocessing_map
+from utils import InputStream, OutputStream, cat_files, fasta_iter, command_output, multiprocessing_map, command
 
 
 M_SCHEMA = {
@@ -167,14 +168,14 @@ def search_canonical_kmers_against_reads(packed_args):
     return "it worked"
 
 
-def query_matched_reads(args, subset_reads_fasta_dir="step5_jf_reads", output_kmer_reads_dir="step6_jf_kmer_reads"):
+def query_matched_reads(args):
     sample_name = args.sample_name
-    filename = f"step3_merge_jf_kmer/{sample_name}.tsv"
-    assert os.path.exists(filename), f"{filename} doesn't exist"
+    output_dir = args.output_dir
 
+    # Read in merged matched neighbor kmers from jellyfish
     global matched_canonical_kmers
     matched_canonical_kmers = []
-    with open(filename) as stream:
+    with open(args.merged_kmers_file) as stream:
         next(stream)
         for line in stream:
             line = line.strip('\n').split('\t')
@@ -183,12 +184,12 @@ def query_matched_reads(args, subset_reads_fasta_dir="step5_jf_reads", output_km
     matched_canonical_kmers = set(matched_canonical_kmers)
 
     # Now I need to scan the reads: one read may include more than one candidate kmers
-    sub_reads_file = f'{subset_reads_fasta_dir}/{sample_name}.fasta'
+    sub_reads_file = args.subset_reads_fasta
     total_read_counts = int(command_output(f"grep -c '@' {sub_reads_file}", quiet=False))
 
     global chunk_tsvs_path
     chunk_tsvs_path = []
-    command(f"mkdir -p {output_kmer_reads_dir}/{sample_name}")
+    command(f"mkdir -p {output_dir}/temp/{sample_name}")
 
     # multiprocessing
     chunk_size = args.chunk_size
@@ -196,7 +197,7 @@ def query_matched_reads(args, subset_reads_fasta_dir="step5_jf_reads", output_km
     number_of_chunks = ceil(total_read_counts/chunk_size) - 1
     arguments_list = []
     for ni, ci in enumerate(range(0, total_read_counts, chunk_size)):
-        headerless_path = f"step6_jf_kmer_reads/{sample_name}/chunkid_{chunk_id}.tsv"
+        headerless_path = f"{output_dir}/temp/{sample_name}/chunkid_{chunk_id}.tsv"
         if ni == number_of_chunks:
             slice_args = (chunk_id, ci, total_read_counts, sub_reads_file, True)
         else:
@@ -208,7 +209,8 @@ def query_matched_reads(args, subset_reads_fasta_dir="step5_jf_reads", output_km
     results = multiprocessing_map(search_canonical_kmers_against_reads, arguments_list, args.num_cores)
     assert all(s == "it worked" for s in results)
 
-    out_file = f"{output_kmer_reads_dir}/{sample_name}.tsv"
+    # Write the neighbor-reads search results to file
+    out_file = f"{output_dir}/{sample_name}.tsv"
     with OutputStream(out_file) as stream:
         stream.write(f"ca_kmer\treads\n")
     cat_files(chunk_tsvs_path, out_file, 20)
@@ -270,13 +272,19 @@ def main():
     p.add_argument(
         "--candidate_spacers_file",
         type=str,
-        default="/mnt/chunyu_6TB/cas13/hmp1/candidate_spacers.txt",
-        help="path to candidate_spacers.txt file")
+        help="path to candidate_spacers.txt or guides.fasta")
     p.add_argument(
-        "--primer_fasta_file", #required=True,
+        "--merged_kmers_file",
         type=str,
-        default="/mnt/chunyu_6TB/cas13/czbiohub/data/SARS-COV-2_spikePrimers.fasta",
-        help="path to primer_fasta file")
+        help="path to merged jellyfish search results per sample")
+    p.add_argument(
+        "--subset_reads_fasta",
+        type=str,
+        help="path to subseted fasta file")
+    p.add_argument(
+        "--output_dir",
+        type=str,
+        help="path to output directory")
     p.add_argument(
         "--reads_fastq", #required=True,
         type=str,
@@ -284,7 +292,10 @@ def main():
     args = p.parse_args()
 
     global candidates
-    candidates = read_candidate_spacers(args.candidate_spacers_file)
+    if args.candidate_spacers_file.endswith(".txt"):
+        candidates = read_candidate_spacers(args.candidate_spacers_file)
+    else:
+        candidates = {f"{record.id}_hd.4":str(record.seq) for record in SeqIO.parse(args.candidate_spacers_file, "fasta")}
 
     if args.parse_matched_kmers:
         parse_matched_kmer(args)

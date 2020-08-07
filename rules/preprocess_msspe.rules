@@ -1,9 +1,9 @@
 ########### Preprocess MSSPE sequencing data
 
-MSSPE_SAMPLES = []
-with open(config["msspe"]["samplelist_fp"]) as stream:
-    for line in stream:
-        MSSPE_SAMPLES.append(line.strip("\n").split("\t")[0])
+rule _all_msspe_r1_kmers:
+    input:
+        expand(config["msspe"]["data_dir"] + "/msspe_reads/{sample}/pcr_reads_1.jf", sample = MSSPE_SAMPLES),
+        expand(config["msspe"]["data_dir"] + "/msspe_reads/{sample}/mngs_reads_1.jf", sample = MSSPE_SAMPLES),
 
 
 rule _all_msspe_reads:
@@ -251,4 +251,20 @@ rule classified_msspe_reads:
         cp {input[1]} {output[3]}
 
         grep "^Sequence" {params.log_dir}/*.txt > {output[4]}
+        """
+
+
+rule kmerize_msspe_reads:
+    input:
+        config["msspe"]["data_dir"] + "/msspe_reads/{sample}/pcr_reads_1.fq",
+        config["msspe"]["data_dir"] + "/msspe_reads/{sample}/mngs_reads_1.fq",
+    output:
+        config["msspe"]["data_dir"] + "/msspe_reads/{sample}/pcr_reads_1.jf",
+        config["msspe"]["data_dir"] + "/msspe_reads/{sample}/mngs_reads_1.jf",
+    threads:
+        8
+    shell:
+        """
+        jellyfish count -m 20 -t {threads} -C -s 10M -o {output[0]} {input[0]}
+        jellyfish count -m 20 -t {threads} -C -s 10M -o {output[1]} {input[1]}
         """
