@@ -90,13 +90,13 @@ def main():
     """ given target.fasta """
     if len(sys.argv) == 3:
         target_fastafile = sys.argv[1]
-        output_file = sys.argv[2]
+        outdir = sys.argv[2]
         for record in SeqIO.parse(target_fastafile, "fasta"):
             seq_name = record.id
             input_kmer = str(record.seq)
             d_neighbors = generate_neighbors(input_kmer, 4)
-            #outfile = f"{outdir}/{seq_name}_hd.4.txt"
-            with open(output_file, "w") as stream:
+            outfile = f"{outdir}/{seq_name}_hd.4.txt"
+            with open(outfile, "w") as stream:
                 for line, kmer in enumerate(d_neighbors):
                     hd = hamming_distance(kmer, input_kmer)
                     stream.write(f">{line}_hd{hd}\n{kmer}\n")
