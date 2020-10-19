@@ -8,3 +8,9 @@ Please refer to [wiki](https://github.com/czbiohub/sc2-guide-InSilicoSCR/wiki/In
 ```
 conda env update --name isscr -f env.yml
 ```
+
+## Compuate exact match via grep
+
+```
+paste - - < guides.fa  | awk '{print $2, substr($1,2)}' | xargs -Ixx -P 8 bash -c "bash grep_kmer_counts.sh xx"
+```
