@@ -4,7 +4,6 @@ import os, sys
 import argparse
 from Bio import SeqIO
 from Bio.Seq import Seq
-from Bio.Alphabet import generic_rna
 
 
 def reverse_complement(dna):
@@ -61,7 +60,7 @@ def convert_guide_to_target(guides_fasta_fp):
     """ convert RNA guide sequences to cDNA target sequences"""
     for record in SeqIO.parse(guides_fasta_fp, "fasta"):
         print(">" + record.id)
-        my_rna = Seq(str(record.seq),  generic_rna)
+        my_rna = Seq(str(record.seq))
         #print(my_rna)
         my_target = my_rna.back_transcribe().reverse_complement()
         #print(my_rna.back_transcribe())

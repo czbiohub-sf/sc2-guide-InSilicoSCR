@@ -6,7 +6,9 @@ guide_fasta: "/mnt/chunyu_6TB/cas13/20200805_sc2_guides/guides.fa"
 
 krakenuniq:
     viral_neighbors_db: /mnt/chunyu_6TB/cas13/dbs/viral-neighbors-20200605-wo
-    refseq_bacteir_db: /mnt/chunyu_6TB/cas13/dbs/refseq-bacteria-20200607
+    refseq_bacteria_db: /mnt/chunyu_6TB/cas13/dbs/refseq-bacteria-20200607
+    pathogen_db: /mnt/chunyu_6TB/cas13/dbs/pathogen-bacteria
+
 
 qc:
     host_ref: /mnt/chunyu_6TB/cas13/dbs/hg38.fa
