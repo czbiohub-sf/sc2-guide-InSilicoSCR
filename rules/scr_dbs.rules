@@ -79,7 +79,7 @@ rule classify_neighbors_vn:
         guides = config["guide_fasta"],
         db = config["krakenuniq"]["viral_neighbors_db"],
     shell:
-        "Rscript /mnt/chunyu_6TB/cas13/sc2-guide-InSilicoSCR/isscrlib/classify_neighbors.R {wildcards.guide} {input} {output} {params.db} {params.guides}"
+        "Rscript /mnt/chunyu/sc2-guide-InSilicoSCR/isscrlib/classify_neighbors.R {wildcards.guide} {input} {output} {params.db} {params.guides}"
 
 
 rule classify_neighbors_rb:
@@ -91,7 +91,7 @@ rule classify_neighbors_rb:
         guides = config["guide_fasta"],
         db = config["krakenuniq"]["viral_neighbors_db"],
     shell:
-        "Rscript isscrlib/classify_neighbors.R {wildcards.guide} {input} {output} {params.db} {params.guides}"
+        "Rscript /mnt/chunyu/sc2-guide-InSilicoSCR/isscrlib/classify_neighbors.R {wildcards.guide} {input} {output} {params.db} {params.guides}"
 
 
 rule classify_pathogen:
@@ -103,4 +103,4 @@ rule classify_pathogen:
         guides = config["guide_fasta"],
         db = config["krakenuniq"]["pathogen_db"],
     shell:
-        "Rscript /mnt/chunyu_6TB/cas13/sc2-guide-InSilicoSCR/isscrlib/classify_neighbors.R {wildcards.guide} {input} {output} {params.db} {params.guides}"
+        "Rscript /mnt/chunyu/sc2-guide-InSilicoSCR/isscrlib/classify_neighbors.R {wildcards.guide} {input} {output} {params.db} {params.guides}"

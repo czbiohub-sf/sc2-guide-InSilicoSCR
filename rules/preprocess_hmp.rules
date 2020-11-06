@@ -45,5 +45,5 @@ rule kmerize_hmp_reads:
         8
     shell:
         """
-        jellyfish count -m 20 -t {threads} -C -s 10M -o {output[0]} {input[0]}
+        jellyfish count -m 20 -t {threads} -C -s 100M -o {output[0]} {input[0]}
         """
