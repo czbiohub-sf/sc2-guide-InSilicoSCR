@@ -89,7 +89,7 @@ rule classify_neighbors_rb:
         config["project_dir"] + "/3_classified_neighbors_rb/{guide}.tsv"
     params:
         guides = config["guide_fasta"],
-        db = config["krakenuniq"]["viral_neighbors_db"],
+        db = config["krakenuniq"]["refseq_bacteria_db"],
     shell:
         "Rscript /mnt/chunyu/sc2-guide-InSilicoSCR/isscrlib/classify_neighbors.R {wildcards.guide} {input} {output} {params.db} {params.guides}"
 
